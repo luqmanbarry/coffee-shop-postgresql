@@ -1,0 +1,88 @@
+
+replicaCount: 1
+
+openshiftApplicationName: postgresql
+
+image:
+  repository: image-registry.openshift-image-registry.svc:5000/openshift/postgresql
+  pullPolicy: IfNotPresent
+  tag: "10-el7"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+autoscaling:
+  enabled: "false"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5432
+  name: postgresql
+  targetPort: 5432
+  protocol: TCP
+  selector:
+    name: coffee-shop-database
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 328Mi
+
+livenessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 10
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+
+volumeMount:
+  mountPath: "/var/lib/pgsql/data"
+  volumeName: coffee-shop-database-data
+  pvcName: coffee-shop-database
+  accessMode: ReadWriteOnce
+  storage: 1Gi
+
+
+pvc:
+  size: 1Gi
+  accessModes:
+  - ReadWriteOnce
+
+credentials:
+  database: ""
+  username: ""
+  password: ""
+

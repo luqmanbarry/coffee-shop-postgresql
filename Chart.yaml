@@ -1,0 +1,11 @@
+apiVersion: v2
+
+name: user14-coffee-shop-postgresql
+
+description: A PostgreSQL database for use in the Coffee Shop Microservices application
+
+type: application
+
+version: "1.0.0"
+
+appVersion: "10"
